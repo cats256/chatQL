@@ -7,7 +7,12 @@ const Home: NextPage = () => {
 
     console.log("Here is the session data:", data);
 
-    return <>{data?.user ? <button onClick={() => signOut()}>Sign Out</button> : <button onClick={() => signIn("google")}>Sign In</button>}</>;
+    return (
+        <div>
+            {data?.user ? <button onClick={() => signOut()}>Sign Out</button> : <button onClick={() => signIn("google")}>Sign In</button>}
+            {data?.user?.name}
+        </div>
+    );
 };
 
 export default Home;
