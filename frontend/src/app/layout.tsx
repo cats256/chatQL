@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ApolloWrapper } from "@/providers/ApolloWrapper";
 import { NextAuthProvider } from "../providers/NextAuthProvider";
 import Providers from "../providers/Providers";
 
@@ -12,12 +13,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <NextAuthProvider>
-            <html lang="en">
-                <body className={inter.className}>
-                    <Providers>{children}</Providers>
-                </body>
-            </html>
-        </NextAuthProvider>
+        <ApolloWrapper>
+            <NextAuthProvider>
+                <html lang="en">
+                    <body className={inter.className}>
+                        <Providers>{children}</Providers>
+                    </body>
+                </html>
+            </NextAuthProvider>
+        </ApolloWrapper>
     );
 }
