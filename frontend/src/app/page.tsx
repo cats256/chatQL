@@ -1,18 +1,15 @@
-"use client";
-import type { NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { LoginButton, LogoutButton } from "@/components/buttons";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
-const Home: NextPage = () => {
-    const { data } = useSession();
-
-    console.log("Here is the session data:", data);
+export default async function Home() {
+    const data = await getServerSession(authOptions);
+    console.log(data);
 
     return (
         <div>
-            {data?.user ? <button onClick={() => signOut()}>Sign Out</button> : <button onClick={() => signIn("google")}>Sign In</button>}
+            {data?.user ? <LogoutButton /> : <LoginButton />}
             {data?.user?.name}
         </div>
     );
-};
-
-export default Home;
+}
