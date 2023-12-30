@@ -1,15 +1,11 @@
-import { LoginButton, LogoutButton } from "@/components/buttons";
-import { getServerSession } from "next-auth";
+import Auth from "@/components/Auth/Auth";
+import Chat from "@/components/Chat/Chat";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { Box } from "@chakra-ui/react";
+import { getServerSession } from "next-auth";
 
 export default async function Home() {
     const data = await getServerSession(authOptions);
-    console.log(data);
 
-    return (
-        <div>
-            {data?.user ? <LogoutButton /> : <LoginButton />}
-            {data?.user?.name}
-        </div>
-    );
+    return <Box>{data?.user?.username ? <Chat /> : <Auth />}</Box>;
 }
