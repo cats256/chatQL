@@ -31,7 +31,6 @@ const Auth: React.FC<IAuthProps> = ({ session, reloadSession }) => {
             <Stack spacing={6} align="center">
                 {session ? (
                     <>
-                        {/* <Text fontSize="3xl">Create a Username</Text> */}
                         <Input placeholder="Enter a username" onChange={(event) => setUsername(event.target.value)} />
                         <Button width="100%" onClick={onSubmit}>
                             Save
