@@ -11,11 +11,14 @@ import toast from "react-hot-toast";
 interface IAuthProps {
     session: Session | null;
     update: () => void;
+    isLoginLoading: boolean;
 }
 
-const Auth: React.FC<IAuthProps> = ({ session, update }) => {
+const Auth: React.FC<IAuthProps> = ({ session, update, isLoginLoading }) => {
     const [username, setUsername] = useState<string>("");
-    const [createUsername, { loading, error }] = useMutation<CreateUsernameData, CreateUsernameVariables>(UserOperations.Mutations.createUsername);
+    const [createUsername, { loading: usernameLoading }] = useMutation<CreateUsernameData, CreateUsernameVariables>(
+        UserOperations.Mutations.createUsername
+    );
 
     const onSubmit = async () => {
         if (!username) return;
@@ -34,7 +37,7 @@ const Auth: React.FC<IAuthProps> = ({ session, update }) => {
 
             await update();
         } catch (error: any) {
-            toast.error(error?.message)
+            toast.error(error?.message);
             console.error(error);
         }
     };
@@ -44,14 +47,14 @@ const Auth: React.FC<IAuthProps> = ({ session, update }) => {
                 {session ? (
                     <>
                         <Input placeholder="Enter a username" onChange={(event) => setUsername(event.target.value)} />
-                        <Button width="100%" onClick={onSubmit}>
+                        <Button width="100%" onClick={onSubmit} isLoading={usernameLoading}>
                             Save
                         </Button>
                     </>
                 ) : (
                     <>
                         <Text fontSize="3xl">ChatQL</Text>
-                        <LoginButton />
+                        <LoginButton isLoginLoading={isLoginLoading} />
                     </>
                 )}
             </Stack>
