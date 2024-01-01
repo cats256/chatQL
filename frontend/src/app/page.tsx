@@ -1,17 +1,10 @@
-"use server";
-
+"use client";
 import Auth from "@/components/Auth/Auth";
 import Chat from "@/components/Chat/Chat";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Box } from "@chakra-ui/react";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
-async function reloadSession() {
-    "use server";
-}
-
-export default async function Home() {
-    const session = await getServerSession(authOptions);
-
-    return <Box>{session?.user?.username ? <Chat /> : <Auth session={session} />}</Box>;
+export default function Home() {
+    const { data: session, update } = useSession();
+    return <Box>{session?.user.username}{session?.user?.username ? <Chat /> : <Auth session={session} update={update} />}</Box>;
 }
