@@ -8,3 +8,4 @@ Implement video streaming
 Fix context type user.ts resolver
 Change to supabase and postgres over nextauth and mongodb
 Fix const session = (await getSession({ req })) as unknown as Session in index.ts
+Change from when you press on a user it automatically create a new "conversation" as opposed to having to select multiple
