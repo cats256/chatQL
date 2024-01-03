@@ -57,13 +57,13 @@ model VerificationToken {
 }
 
 model Conversation {
-    id                      String                    @id @default(auto()) @map("_id") @db.ObjectId
-    messages                Message[]
-    createdAt               DateTime                  @default(now())
-    updatedAt               DateTime                  @updatedAt
-    ConversationParticipant ConversationParticipant[]
-    latestMessageId         String?                   @unique @db.ObjectId
-    latestMessage           Message?                  @relation(name: "latestConversationMessage", fields: [latestMessageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+    id              String                    @id @default(auto()) @map("_id") @db.ObjectId
+    messages        Message[]
+    createdAt       DateTime                  @default(now())
+    updatedAt       DateTime                  @updatedAt
+    participants    ConversationParticipant[]
+    latestMessageId String?                   @unique @db.ObjectId
+    latestMessage   Message?                  @relation(name: "latestConversationMessage", fields: [latestMessageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 }
 
 model ConversationParticipant {
