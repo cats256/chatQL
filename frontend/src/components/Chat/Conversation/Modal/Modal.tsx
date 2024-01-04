@@ -4,11 +4,12 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack } from "@chakra-ui/react";
 import React, { FormEvent, useState } from "react";
 import UserSearchList from "./UserSearchList";
-import Participant from "./Participant";
+import Participant from "./Participants";
 import toast from "react-hot-toast";
 import ConversationOperations from "@/graphql/operations/conversation";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { useRouter } from "next/navigation";
 
 interface ModalProps {
     isOpen: boolean;
@@ -16,6 +17,8 @@ interface ModalProps {
 }
 
 const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+    const router = useRouter();
+
     const [username, setUsername] = useState("");
     const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
     const [searchUsers, { data, loading: searchUsersLoading }] = useLazyQuery<SearchUsersData, SearchUsersInput>(UserOperations.Queries.searchUsers);
@@ -51,6 +54,21 @@ const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                     participantIds,
                 },
             });
+
+            if (!data?.createConversation) {
+                toast.error("Failed to create conversation");
+                throw new Error("Failed to create conversation");
+            }
+
+            const {
+                createConversation: { conversationId },
+            } = data;
+
+            router.push(`?conversationId=${conversationId}`);
+
+            setParticipants([]);
+            setUsername("");
+            onClose();
         } catch (error: any) {
             console.error("onCreateConversation", error);
             toast.error(error?.message);

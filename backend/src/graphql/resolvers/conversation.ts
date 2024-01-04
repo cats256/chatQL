@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { GraphQLContext } from "../../util/types";
+import { ConversationPopulated, GraphQLContext } from "../../util/types";
 import { ApolloError } from "apollo-server-core";
 import { Prisma } from "@prisma/client";
 
@@ -29,14 +29,41 @@ export const conversationPopulated = Prisma.validator<Prisma.ConversationInclude
 });
 
 const resolvers = {
-    Mutation: {
-        createConversation: async (
-            _: any,
-            args: { participantsIds: Array<string> },
-            context: GraphQLContext
-        ): Promise<{ conversationId: string }> => {
+    Query: {
+        conversations: async (_: any, __: any, context: GraphQLContext): Promise<Array<ConversationPopulated>> => {
             const { session, prisma } = context;
-            const { participantsIds } = args;
+
+            if (!session?.user) {
+                throw new ApolloError("Not authorized.");
+            }
+
+            const {
+                user: { id: userId },
+            } = session;
+
+            try {
+                return await prisma.conversation.findMany({
+                    where: {
+                        participants: {
+                            some: {
+                                userId: {
+                                    equals: userId,
+                                },
+                            },
+                        },
+                    },
+                    include: conversationPopulated,
+                });
+            } catch (error: any) {
+                console.error("conversations error", error);
+                throw new ApolloError(error?.message);
+            }
+        },
+    },
+    Mutation: {
+        createConversation: async (_: any, args: { participantIds: Array<string> }, context: GraphQLContext): Promise<{ conversationId: string }> => {
+            const { session, prisma } = context;
+            const { participantIds } = args;
 
             if (!session?.user) {
                 throw new ApolloError("Not authorized.");
@@ -51,7 +78,7 @@ const resolvers = {
                     data: {
                         participants: {
                             createMany: {
-                                data: participantsIds.map((participantId) => ({
+                                data: participantIds.map((participantId) => ({
                                     userId: participantId,
                                     hasSeenLatestMessage: participantId === userId,
                                 })),

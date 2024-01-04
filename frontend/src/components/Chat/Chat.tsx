@@ -10,7 +10,7 @@ interface ChatProps {
 
 const Chat: React.FC<ChatProps> = ({ session }) => {
     return (
-        <Flex height="100vh" border="1px solid red">
+        <Flex height="100vh">
             <ConversationsWrapper session={session} />
             <FeedWrapper session={session} />
             <LogoutButton />

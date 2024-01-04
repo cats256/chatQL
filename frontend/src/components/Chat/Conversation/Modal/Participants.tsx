@@ -2,12 +2,12 @@ import { SearchedUser } from "@/utils/types";
 import { Flex, Stack, Text } from "@chakra-ui/react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
-interface ParticipantProps {
+interface ParticipantsProps {
     participants: Array<SearchedUser>;
     removeParticipant: (userId: string) => void;
 }
 
-const Participant: React.FC<ParticipantProps> = ({ participants, removeParticipant }) => {
+const Participants: React.FC<ParticipantsProps> = ({ participants, removeParticipant }) => {
     return (
         <Flex mt={8} gap="10px" flexWrap="wrap">
             {participants.map((participant) => (
@@ -19,4 +19,4 @@ const Participant: React.FC<ParticipantProps> = ({ participants, removeParticipa
         </Flex>
     );
 };
-export default Participant;
+export default Participants;

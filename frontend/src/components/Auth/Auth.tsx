@@ -42,7 +42,7 @@ const Auth: React.FC<IAuthProps> = ({ session, update, isLoginLoading }) => {
         }
     };
     return (
-        <Center height="100vh" border="1px solid red">
+        <Center height="100vh">
             <Stack spacing={6} align="center">
                 {session ? (
                     <>
