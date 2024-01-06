@@ -1,32 +1,12 @@
 "use client";
-import { createClient } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
-const supabase = createClient();
+import { LoginButton } from "@/components/buttons";
+import { AuthContext } from "@/providers/AuthProvider";
+import { createBrowserClient } from "@supabase/ssr";
+import { useContext } from "react";
 
 export default function Home() {
-    const [session, setSession] = useState<any>(null);
+    const context = useContext(AuthContext);
 
-    useEffect(() => {
-        supabase.auth.getSession().then((object) => {
-            setSession(object);
-        });
-    }, []);
-
-    const handleGoogleSignIn = async () => {
-        await supabase.auth.signInWithOAuth({
-            provider: "google",
-        });
-    };
-
-    console.log(session);
-
-    return (
-        <div>
-            <button onClick={handleGoogleSignIn}>Sign in with Google</button>
-        </div>
-    );
+    return context?.session ? <div>Logged in</div> : <LoginButton isLoading={context?.isLoading} />;
 }
-
-// look up supabase verify access token

@@ -1,0 +1,1 @@
+-   Change from createServerComponentClient in layout.tsx to createServerClient supabase/ssr
