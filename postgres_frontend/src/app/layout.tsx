@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
+import Providers from "@/providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <html lang="en">
             <body className={inter.className}>
                 <AuthProvider session={session} accessToken={session?.access_token}>
-                    {children}
+                    <Providers>{children}</Providers>
                 </AuthProvider>
             </body>
         </html>
