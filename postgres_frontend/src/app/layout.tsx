@@ -1,10 +1,10 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
 import Providers from "@/providers/Providers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
