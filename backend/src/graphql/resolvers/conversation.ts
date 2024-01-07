@@ -62,7 +62,7 @@ const resolvers = {
     },
     Mutation: {
         createConversation: async (_: any, args: { participantIds: Array<string> }, context: GraphQLContext): Promise<{ conversationId: string }> => {
-            const { session, prisma } = context;
+            const { session, prisma, pubsub } = context;
             const { participantIds } = args;
 
             if (!session?.user) {
@@ -88,6 +88,12 @@ const resolvers = {
                     include: conversationPopulated,
                 });
 
+                console.log(conversation);
+
+                pubsub.publish("CONVERSATION_CREATED", {
+                    conversationCreated: conversation,
+                });
+
                 return {
                     conversationId: conversation.id,
                 };
@@ -95,6 +101,19 @@ const resolvers = {
                 console.error("createConversation error", error);
                 throw new GraphQLError("Error creating conversation");
             }
+        },
+    },
+    Subscription: {
+        conversationCreated: {
+            subscribe: (_: any, __: any, context: GraphQLContext) => {
+                const { pubsub } = context;
+
+                console.log("conversationCreated subscription fired");
+                console.log(__.asyncIterator(["CONVERSATION_CREATED"]));
+                console.log("something")
+
+                return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+            },
         },
     },
 };
