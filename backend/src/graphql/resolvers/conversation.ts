@@ -108,10 +108,6 @@ const resolvers = {
             subscribe: (_: any, __: any, context: GraphQLContext) => {
                 const { pubsub } = context;
 
-                console.log("conversationCreated subscription fired");
-                console.log(__.asyncIterator(["CONVERSATION_CREATED"]));
-                console.log("something")
-
                 return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
             },
         },
