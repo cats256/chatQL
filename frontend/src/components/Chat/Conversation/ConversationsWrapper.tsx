@@ -1,6 +1,6 @@
 import { Session } from "next-auth";
-import { Box } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { Box, Progress, Spinner } from "@chakra-ui/react";
+import React, { use, useEffect, useRef } from "react";
 import ConversationOperations from "@/graphql/operations/conversation";
 import { useQuery } from "@apollo/client";
 import ConversationList from "./ConversationList";
@@ -18,22 +18,21 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
         loading: conversationsLoading,
         subscribeToMore,
     } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations);
+    const conversationIdsSet = useRef(new Set<string>());
 
-    console.log("conversationsData", conversationsData);
+    const initializedConversationsSet = useRef(false);
 
-    console.log(ConversationOperations.Subscriptions.conversationCreated);
-    const { data, loading, error } = useSubscription(ConversationOperations.Subscriptions.conversationCreated);
-    console.log("data", data);
-    console.log("loading", loading);
-    console.log("error", error);
     const subscribeToNewConversations = () => {
         subscribeToMore({
             document: ConversationOperations.Subscriptions.conversationCreated,
             updateQuery: (prev, { subscriptionData }: { subscriptionData: { data: { conversationCreated: ConversationPopulated } } }) => {
-                console.log("updateQuery called");
                 if (!subscriptionData.data) return prev;
 
                 const newConversation = subscriptionData.data.conversationCreated;
+
+                if (conversationIdsSet.current.has(newConversation.id)) return prev;
+
+                conversationIdsSet.current.add(newConversation.id);
 
                 return Object.assign({}, prev, {
                     conversations: [newConversation, ...prev.conversations],
@@ -44,18 +43,24 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
 
     useEffect(() => {
         subscribeToNewConversations();
-        console.log("useEffect called");
     }, []);
+
+    useEffect(() => {
+        if (!conversationsLoading && !initializedConversationsSet.current) {
+            initializedConversationsSet.current = true;
+            conversationIdsSet.current = new Set(conversationsData?.conversations.map((conversation) => conversation._id));
+        }
+    }, [conversationsLoading]);
 
     if (conversationsError) {
         toast.error("There was an error fetching conversations");
         return null;
     }
 
-    console.log("ConversationWrapper", conversationsData);
     return (
         <Box width={{ base: "100%", md: "400px" }} bg="whiteAlpha.50" py={6} px={3}>
             <ConversationList session={session} conversations={conversationsData?.conversations || []} />
+            {conversationsLoading && <Progress size="xs" isIndeterminate />}
         </Box>
     );
 };
