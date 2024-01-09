@@ -4,14 +4,20 @@ import ConversationModal from "./Modal/Modal";
 import React, { useState } from "react";
 import { ConversationPopulated } from "../../../../../backend/src/util/types";
 import ConversationItem from "./ConversationItem";
+import { useSearchParams } from "next/navigation";
 
 type ConversationListProps = {
     session: Session;
     conversations: Array<ConversationPopulated>;
+    onViewConversation: (conversationId: string) => void;
 };
 
-const ConversationList: React.FC<ConversationListProps> = ({ conversations, session }) => {
+const ConversationList: React.FC<ConversationListProps> = ({ conversations, session, onViewConversation }) => {
+    const searchParams = useSearchParams();
     const [isOpen, setIsOpen] = useState(false);
+    const {
+        user: { id: userId },
+    } = session;
 
     const onOpen = () => setIsOpen(true);
     const onClose = () => setIsOpen(false);
@@ -25,7 +31,13 @@ const ConversationList: React.FC<ConversationListProps> = ({ conversations, sess
             </Box>
             <ConversationModal isOpen={isOpen} onClose={onClose} />
             {conversations.map((conversation) => (
-                <ConversationItem key={conversation.id} conversation={conversation} />
+                <ConversationItem
+                    userId={userId}
+                    key={conversation.id}
+                    conversation={conversation}
+                    onClick={() => onViewConversation(conversation.id)}
+                    isSelected={conversation.id === searchParams?.get("conversationId")}
+                />
             ))}
         </Box>
     );

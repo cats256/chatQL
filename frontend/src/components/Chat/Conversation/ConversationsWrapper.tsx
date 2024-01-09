@@ -8,6 +8,7 @@ import { ConversationsData } from "@/utils/types";
 import { ConversationPopulated } from "../../../../../backend/src/util/types";
 import toast from "react-hot-toast";
 import { useSubscription, gql } from "@apollo/client";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type ConversationsWrapperProps = { session: Session };
 
@@ -18,9 +19,17 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
         loading: conversationsLoading,
         subscribeToMore,
     } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations);
-    const conversationIdsSet = useRef(new Set<string>());
 
+    const searchParams = useSearchParams();
+    const conversationId = searchParams?.get("conversationId");
+
+    const conversationIdsSet = useRef(new Set<string>());
     const initializedConversationsSet = useRef(false);
+
+    const router = useRouter();
+    const onViewConversation = async (conversationId: string) => {
+        router.push(`?conversationId=${conversationId}`);
+    };
 
     const subscribeToNewConversations = () => {
         subscribeToMore({
@@ -58,8 +67,8 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
     }
 
     return (
-        <Box width={{ base: "100%", md: "400px" }} bg="whiteAlpha.50" py={6} px={3}>
-            <ConversationList session={session} conversations={conversationsData?.conversations || []} />
+        <Box width={{ base: "100%", md: "400px" }} bg="whiteAlpha.50" py={6} px={3} display={{ base: conversationId ? "none" : "flex", md: "flex" }}>
+            <ConversationList session={session} conversations={conversationsData?.conversations || []} onViewConversation={onViewConversation} />
             {conversationsLoading && <Progress size="xs" isIndeterminate />}
         </Box>
     );

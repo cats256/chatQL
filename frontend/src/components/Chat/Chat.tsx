@@ -13,7 +13,6 @@ const Chat: React.FC<ChatProps> = ({ session }) => {
         <Flex height="100vh">
             <ConversationsWrapper session={session} />
             <FeedWrapper session={session} />
-            <LogoutButton />
         </Flex>
     );
 };
