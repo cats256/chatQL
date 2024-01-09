@@ -12,3 +12,5 @@ Fix const session = (await getSession({ req })) as unknown as Session in index.t
 Change from when you press on a user it automatically create a new "conversation" as opposed to having to select multiple
 Also add redux in here
 Fix participant: any type in conversation resolver
+Change token type in ConversationItem.tsx
+Add shallow routing nextjs
