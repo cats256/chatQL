@@ -1,8 +1,7 @@
-import { ISODateString } from "next-auth";
 import { Prisma, PrismaClient } from "@prisma/client";
-import { conversationPopulated, participantPopulated } from "../graphql/resolvers/conversation";
-import { Context } from "apollo-server-core";
 import { PubSub } from "graphql-subscriptions";
+import { Context } from "graphql-ws/lib/server";
+import { conversationPopulated, participantPopulated } from "../graphql/resolvers/conversation";
 
 export interface GraphQLContext {
     session: Session | null;
@@ -11,8 +10,7 @@ export interface GraphQLContext {
 }
 
 export interface Session {
-    user: User;
-    expires: ISODateString;
+    user?: User;
 }
 
 export interface SubscriptionContext extends Context {
