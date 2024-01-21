@@ -32,7 +32,7 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ userId, conversationId 
             {conversation && (
                 <Stack direction="row">
                     <Text color="whiteAlpha.600">To: </Text>
-                    <Text fontWeight={600}>{/* {formatUsernames(conversation.participants, userId)} */}</Text>
+                    <Text fontWeight={600}>{formatUsernames(conversation.participants, userId)}</Text>
                 </Stack>
             )}
         </Stack>

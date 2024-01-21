@@ -71,6 +71,8 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
                             event.stopPropagation();
                             //   onEditConversation();
                         }}
+                        bg="#2d2d2d"
+                        _hover={{ bg: "whiteAlpha.300" }}
                     >
                         Edit
                     </MenuItem>
