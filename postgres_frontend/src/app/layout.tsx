@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
+import { ApolloWrapper } from "@/providers/ApolloWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,12 +22,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     } = await supabase.auth.getSession();
 
     return (
-        <html lang="en">
-            <body className={inter.className}>
-                <AuthProvider session={session} accessToken={session?.access_token}>
-                    <Providers>{children}</Providers>
-                </AuthProvider>
-            </body>
-        </html>
+        <ApolloWrapper>
+            <html lang="en">
+                <body className={inter.className}>
+                    <AuthProvider session={session} accessToken={session?.access_token}>
+                        <Providers>{children}</Providers>
+                    </AuthProvider>
+                </body>
+            </html>
+        </ApolloWrapper>
     );
 }
