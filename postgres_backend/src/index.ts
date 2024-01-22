@@ -1,19 +1,36 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import express from "express";
 import http from "http";
 import cors from "cors";
 import typeDefs from "./schema/typeDefs";
 import resolvers from "./schema/resolvers";
+import cookieParser from "cookie-parser";
+import { createClient } from "@supabase/supabase-js";
+import * as dotenv from "dotenv";
 
 interface MyContext {
     token?: String;
 }
 
+const getTokenFromReq = (req: any) => {
+    const { authorization } = req.headers;
+    if (authorization && authorization.startsWith("Bearer ")) {
+        return authorization.split(" ")[1];
+    }
+    return null;
+};
+
 async function main() {
+    dotenv.config();
     const app = express();
     const httpServer = http.createServer(app);
+    const corsOptions = {
+        origin: "http://localhost:3000",
+        credentials: true,
+    };
     const server = new ApolloServer<MyContext>({
         typeDefs,
         resolvers,
@@ -22,10 +39,23 @@ async function main() {
     await server.start();
     app.use(
         "/graphql",
-        cors<cors.CorsRequest>(),
+        cors<cors.CorsRequest>(corsOptions),
         express.json(),
+        cookieParser(),
         expressMiddleware(server, {
-            context: async ({ req }) => ({ token: req.headers.token }),
+            context: async ({ req }) => {
+                console.log("start");
+                const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+                const token = getTokenFromReq(req);
+                console.log(token);
+                const {
+                    data: { user },
+                } = await supabase.auth.getUser(token);
+
+                console.log(user);
+                console.log("reached");
+                return { token: req.headers.token };
+            },
         })
     );
 

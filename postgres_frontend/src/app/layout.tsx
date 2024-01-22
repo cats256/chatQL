@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     } = await supabase.auth.getSession();
 
     return (
-        <ApolloWrapper>
+        <ApolloWrapper session={session}>
             <html lang="en">
                 <body className={inter.className}>
                     <AuthProvider session={session} accessToken={session?.access_token}>

@@ -1,1 +1,3 @@
 -   Change from createServerComponentClient in layout.tsx to createServerClient supabase/ssr
+-   Look up the purpose of exchange code for session (https://chat.openai.com/c/5ca38016-b2b0-4a41-b37c-9692cd6b2602)
+-   Look up supabase auth access token express.js (https://github.com/supabase/supabase/issues/491)

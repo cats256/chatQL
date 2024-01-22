@@ -14,11 +14,15 @@
     "license": "ISC",
     "dependencies": {
         "@apollo/server": "^4.10.0",
+        "@supabase/auth-helpers-nextjs": "^0.8.7",
+        "cookie-parser": "^1.4.6",
+        "dotenv": "^16.3.2",
         "graphql": "^16.8.1",
         "graphql-tag": "^2.12.6",
         "lodash.merge": "^4.6.2"
     },
     "devDependencies": {
+        "@types/cookie-parser": "^1.4.6",
         "@types/cors": "^2.8.17",
         "@types/lodash.merge": "^4.6.9",
         "@types/node": "^20.11.5",
