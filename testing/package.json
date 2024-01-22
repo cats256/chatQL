@@ -1,0 +1,25 @@
+{
+    "name": "testing",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.ts",
+    "type": "module",
+    "scripts": {
+        "compile": "tsc",
+        "start": "npm run compile && node ./dist/index.js",
+        "dev": "nodemon --watch src --exec 'npm run compile && node ./dist/index.js'"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@apollo/server": "^4.10.0",
+        "graphql": "^16.8.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.5",
+        "nodemon": "^3.0.3",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
+    }
+}
