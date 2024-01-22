@@ -1,4 +1,10 @@
-module.exports.resolvers = {
-    Query: {},
-    Mutation: {},
+const resolvers = {
+    Query: {
+        searchUsers: () => {},
+    },
+    Mutation: {
+        createUsername: () => {},
+    },
 };
+
+export default resolvers;

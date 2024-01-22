@@ -3,12 +3,11 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "compile": "tsc",
         "start": "npm run compile && node ./dist/index.js",
-        "dev": "nodemon --exec ts-node src/index.ts"
+        "dev": "nodemon src/index.ts"
     },
     "keywords": [],
     "author": "",
@@ -20,6 +19,8 @@
         "lodash.merge": "^4.6.2"
     },
     "devDependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/lodash.merge": "^4.6.9",
         "@types/node": "^20.11.5",
         "nodemon": "^3.0.3",
         "ts-node": "^10.9.2",

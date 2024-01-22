@@ -1,6 +1,6 @@
 import { gql } from "graphql-tag";
 
-module.exports.typeDefs = gql`
+const typeDefs = gql`
     type User {
         id: String
         name: String
@@ -10,5 +10,18 @@ module.exports.typeDefs = gql`
         image: String
     }
 
-    type Query {}
+    type Query {
+        searchUsers(username: String): [User]
+    }
+
+    type Mutation {
+        createUsername(username: String): CreateUsernameResponse
+    }
+
+    type CreateUsernameResponse {
+        success: Boolean
+        error: String
+    }
 `;
+
+export default typeDefs;
