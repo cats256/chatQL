@@ -1,7 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import express from "express";
 import http from "http";
 import cors from "cors";
@@ -44,17 +43,13 @@ async function main() {
         cookieParser(),
         expressMiddleware(server, {
             context: async ({ req }) => {
-                console.log("start");
                 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
                 const token = getTokenFromReq(req);
-                console.log(token);
                 const {
                     data: { user },
                 } = await supabase.auth.getUser(token);
 
-                console.log(user);
-                console.log("reached");
-                return { token: req.headers.token };
+                return { supabase, userId: user?.id };
             },
         })
     );

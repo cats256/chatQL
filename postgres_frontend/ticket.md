@@ -1,3 +1,6 @@
 -   Change from createServerComponentClient in layout.tsx to createServerClient supabase/ssr
 -   Look up the purpose of exchange code for session (https://chat.openai.com/c/5ca38016-b2b0-4a41-b37c-9692cd6b2602)
 -   Look up supabase auth access token express.js (https://github.com/supabase/supabase/issues/491)
+-   'await' has no effect on the type of this expression.ts(80007)             await update();
+-   https://www.reddit.com/r/Supabase/comments/rwdrlo/how_is_it_secure_to_use_supabase_on_the_client/ use supabase for authentication without allowing database access https://www.reddit.com/r/Supabase/comments/xs6laz/since_the_keyurl_is_stored_on_the_client_side/ supabase database client side frontend secure
+-   Add row-level security
