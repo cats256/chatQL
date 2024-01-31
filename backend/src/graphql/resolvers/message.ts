@@ -1,10 +1,16 @@
 import { GraphQLError } from "graphql";
-import { GraphQLContext, MessageSentSubscriptionPayload, SendMessageArguments } from "../../util/types";
+import { GraphQLContext, MessagePopulated, MessageSentSubscriptionPayload, SendMessageArguments } from "../../util/types";
 import { Prisma } from "@prisma/client";
 import { withFilter } from "graphql-subscriptions";
 
 const resolvers = {
-    Query: {},
+    Query: {
+        messages: async function (_: any, args: { conversationId: string }, context: GraphQLContext): Promise<Array<MessagePopulated>> {
+            const { session, prisma } = context;
+            const { conversationId } = args;
+            return [];
+        },
+    },
     Mutation: {
         sendMessage: async function (_: any, args: SendMessageArguments, context: GraphQLContext): Promise<boolean> {
             const { session, prisma, pubsub } = context;

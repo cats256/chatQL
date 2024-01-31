@@ -8,6 +8,10 @@ const typeDefs = gql`
         createdAt: Date
     }
 
+    type Query {
+        message(conversationId: string): [Message]
+    }
+
     type Mutation {
         sendMessage(id: String, conversationId: String, senderId: String, body: String): Boolean
     }
