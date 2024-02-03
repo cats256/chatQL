@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import React from "react";
 import MessagesHeader from "./Messages/Header";
 import MessageInput from "./Messages/Input";
+import Messages from "./Messages/Message";
 
 type FeedWrapperProps = { session: Session };
 
@@ -22,6 +23,7 @@ const FeedWrapper: React.FC<FeedWrapperProps> = ({ session }) => {
                 <>
                     <Flex direction="column" justify="space-between" overflow="hidden" flexGrow={1} border="1px solid red">
                         <MessagesHeader userId={userId} conversationId={conversationId} />
+                        <Messages userId={userId} conversationId={conversationId} />
                     </Flex>
                     <MessageInput session={session} conversationId={conversationId}></MessageInput>
                 </>

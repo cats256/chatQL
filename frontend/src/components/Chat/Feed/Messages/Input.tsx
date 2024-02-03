@@ -1,23 +1,25 @@
 import { Box, Input } from "@chakra-ui/react";
 import { Session } from "next-auth";
+import { Message } from "postcss";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface MessageInputProps {
     session: Session;
     conversationId: string;
 }
 
-const MessageInput = ({ session, conversationId }: MessageInputProps) => {
+const MessageInput: React.FC<MessageInputProps> = ({ session, conversationId }: MessageInputProps) => {
     const [messageBody, setMessageBody] = useState("");
 
     const onSendMessage = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        // try {
-
-        // } catch (error: any) {
-        //     console.log(error);
-        // }
+        try {
+        } catch (error: any) {
+            console.log("onSendMessage error", error);
+            toast.error(error?.message);
+        }
     };
 
     return (
