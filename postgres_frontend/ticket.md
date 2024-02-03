@@ -4,3 +4,7 @@
 -   'await' has no effect on the type of this expression.ts(80007)             await update();
 -   https://www.reddit.com/r/Supabase/comments/rwdrlo/how_is_it_secure_to_use_supabase_on_the_client/ use supabase for authentication without allowing database access https://www.reddit.com/r/Supabase/comments/xs6laz/since_the_keyurl_is_stored_on_the_client_side/ supabase database client side frontend secure
 -   Add row-level security
+-   Make it so it's not possible to update username if username already exists or allows user to change username
+-   https://www.apollographql.com/docs/react/data/defer/
+-   Remove success: true in createUsername, doesn't seem to have much purpose for now
+-   Fix the try-catch to be more specific

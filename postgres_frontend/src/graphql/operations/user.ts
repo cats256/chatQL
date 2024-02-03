@@ -1,5 +1,10 @@
 import { gql } from "@apollo/client";
 
+const UserDataFields = `
+    id
+    created_at
+    username
+`;
 const userOperations = {
     Queries: {
         searchUsers: gql`
@@ -7,6 +12,13 @@ const userOperations = {
                 searchUsers(username: $username) {
                     id
                     username
+                }
+            }
+        `,
+        getUserDataById: gql`
+            query GetUserDataById {
+                getUserDataById {
+                    ${UserDataFields}
                 }
             }
         `,

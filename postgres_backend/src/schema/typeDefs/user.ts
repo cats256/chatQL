@@ -1,6 +1,8 @@
 import { gql } from "graphql-tag";
 
 const typeDefs = gql`
+    scalar Date
+
     type User {
         id: String
         name: String
@@ -21,6 +23,16 @@ const typeDefs = gql`
     type CreateUsernameResponse {
         success: Boolean
         error: String
+    }
+
+    type PublicProfile {
+        id: String
+        created_at: Date
+        username: String
+    }
+
+    type Query {
+        getUserDataById: PublicProfile
     }
 `;
 

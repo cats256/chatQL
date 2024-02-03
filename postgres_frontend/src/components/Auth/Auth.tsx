@@ -1,18 +1,17 @@
 "use client";
 import { LoginButton } from "@/components/buttons";
+import userOperations from "@/graphql/operations/user";
 import UserOperations from "@/graphql/operations/user";
 import { AuthContext } from "@/providers/AuthProvider";
 import { CreateUsernameData, CreateUsernameVariables } from "@/utils/types";
-import { useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import { Button, Center, Input, Stack, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 
-interface IAuthProps {
-    update: () => void;
-}
+interface IAuthProps {}
 
-const Auth: React.FC<IAuthProps> = ({ update }) => {
+const Auth: React.FC<IAuthProps> = () => {
     const session = useContext(AuthContext)?.session;
     const isLoginLoading = useContext(AuthContext)?.isLoading;
 
@@ -21,11 +20,13 @@ const Auth: React.FC<IAuthProps> = ({ update }) => {
         UserOperations.Mutations.createUsername
     );
 
+    const client = useApolloClient();
+
     const onSubmit = async () => {
         if (!username) return;
         try {
             const { data } = await createUsername({ variables: { username } });
-
+            console.log(data);
             if (!data?.createUsername) {
                 throw new Error();
             }
@@ -36,7 +37,19 @@ const Auth: React.FC<IAuthProps> = ({ update }) => {
 
             toast.success("Username created!");
 
-            await update();
+            const prevUserData = client.readQuery({ query: userOperations.Queries.getUserDataById });
+            const updatedUserData = {
+                ...prevUserData,
+                getUserDataById: {
+                    ...prevUserData.getUserDataById,
+                    username,
+                },
+            };
+
+            client.writeQuery({
+                query: userOperations.Queries.getUserDataById,
+                data: updatedUserData,
+            });
         } catch (error: any) {
             toast.error(error?.message);
             console.error(error);
