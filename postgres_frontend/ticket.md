@@ -8,3 +8,6 @@
 -   https://www.apollographql.com/docs/react/data/defer/
 -   Remove success: true in createUsername, doesn't seem to have much purpose for now
 -   Fix the try-catch to be more specific
+-   Look up when an object in useState changes but an attribute of the object, which a component relies on, doesn't change, would that component re-render?
+    - so even if setState is triggered and the new value set is the same, it would re-render causing unnecessary use of resources?
+    - look up react.memo

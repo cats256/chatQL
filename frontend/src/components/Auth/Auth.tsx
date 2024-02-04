@@ -35,7 +35,7 @@ const Auth: React.FC<IAuthProps> = ({ session, update, isLoginLoading }) => {
 
             toast.success("Username created!");
 
-            await update();
+            update();
         } catch (error: any) {
             toast.error(error?.message);
             console.error(error);

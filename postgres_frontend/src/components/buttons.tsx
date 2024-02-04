@@ -2,16 +2,12 @@
 
 import { Button, Image } from "@chakra-ui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import router from "next/router";
-import { useEffect } from "react";
 
 type LoginButtonProps = {
     isLoginLoading: boolean | undefined;
 };
 
-type LogoutButtonProps = {
-    isLoading: boolean | undefined;
-};
+type LogoutButtonProps = {};
 
 export const LoginButton: React.FC<LoginButtonProps> = ({ isLoginLoading }) => {
     const supabase = createClientComponentClient();
@@ -29,7 +25,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ isLoginLoading }) => {
     );
 };
 
-export const LogoutButton: React.FC<LogoutButtonProps> = ({ isLoading }) => {
+export const LogoutButton: React.FC<LogoutButtonProps> = () => {
     const supabase = createClientComponentClient();
 
     const handleSignOut = async () => {
@@ -37,7 +33,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({ isLoading }) => {
     };
 
     return (
-        <Button onClick={handleSignOut} isLoading={isLoading}>
+        <Button width="100%" onClick={handleSignOut}>
             Logout
         </Button>
     );

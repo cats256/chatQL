@@ -1,13 +1,12 @@
 "use client";
 
 import Auth from "@/components/Auth/Auth";
-import { LoginButton, LogoutButton } from "@/components/buttons";
+import Chat from "@/components/Chat/Chat";
 import userOperations from "@/graphql/operations/user";
 import { AuthContext } from "@/providers/AuthProvider";
 import { useQuery } from "@apollo/client";
-import { Center, Stack, Text } from "@chakra-ui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function Home() {
@@ -34,9 +33,5 @@ export default function Home() {
         toast.error(userDataError.message);
     }
 
-    console.log(userData);
-    console.log(userData?.getUserDataById);
-    console.log(userData?.getUserDataById?.username);
-
-    return !userDataLoading && (userData?.getUserDataById?.username ? <LogoutButton isLoading={context?.isLoading} /> : <Auth />);
+    return !userDataLoading && (userData?.getUserDataById?.username ? <Chat conversations={userData?.getUserDataById.conversations} /> : <Auth />);
 }
