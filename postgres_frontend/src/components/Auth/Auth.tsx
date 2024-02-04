@@ -1,10 +1,9 @@
 "use client";
 import { LoginButton } from "@/components/buttons";
-import userOperations from "@/graphql/operations/user";
 import UserOperations from "@/graphql/operations/user";
 import { AuthContext } from "@/providers/AuthProvider";
 import { CreateUsernameData, CreateUsernameVariables } from "@/utils/types";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Button, Center, Input, Stack, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
@@ -20,14 +19,12 @@ const Auth: React.FC<IAuthProps> = () => {
         UserOperations.Mutations.createUsername
     );
 
-    const client = useApolloClient();
-
     const onSubmit = async () => {
         if (!username) return;
         try {
             const { data } = await createUsername({ variables: { username } });
-            console.log(data);
             if (!data?.createUsername) {
+                console.error("createUsername does not return any data")
                 throw new Error();
             }
 
@@ -36,20 +33,6 @@ const Auth: React.FC<IAuthProps> = () => {
             }
 
             toast.success("Username created!");
-
-            const prevUserData = client.readQuery({ query: userOperations.Queries.getUserDataById });
-            const updatedUserData = {
-                ...prevUserData,
-                getUserDataById: {
-                    ...prevUserData.getUserDataById,
-                    username,
-                },
-            };
-
-            client.writeQuery({
-                query: userOperations.Queries.getUserDataById,
-                data: updatedUserData,
-            });
         } catch (error: any) {
             toast.error(error?.message);
             console.error(error);

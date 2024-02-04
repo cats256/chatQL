@@ -4,7 +4,9 @@ const UserDataFields = `
     id
     created_at
     username
+    conversations
 `;
+
 const userOperations = {
     Queries: {
         searchUsers: gql`
@@ -27,7 +29,9 @@ const userOperations = {
         createUsername: gql`
             mutation CreateUsername($username: String!) {
                 createUsername(username: $username) {
-                    success
+                    userData {
+                        ${UserDataFields}
+                    }
                     error
                 }
             }

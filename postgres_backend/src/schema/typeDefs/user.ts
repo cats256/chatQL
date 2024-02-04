@@ -5,23 +5,11 @@ const typeDefs = gql`
 
     type User {
         id: String
-        name: String
         username: String
-        email: String
-        emailVerified: Boolean
-        image: String
-    }
-
-    type Query {
-        searchUsers(username: String): [User]
-    }
-
-    type Mutation {
-        createUsername(username: String): CreateUsernameResponse
     }
 
     type CreateUsernameResponse {
-        success: Boolean
+        userData: PublicProfile
         error: String
     }
 
@@ -29,10 +17,16 @@ const typeDefs = gql`
         id: String
         created_at: Date
         username: String
+        conversations: [String]
     }
 
     type Query {
+        searchUsers(username: String!): [User]
         getUserDataById: PublicProfile
+    }
+
+    type Mutation {
+        createUsername(username: String!): CreateUsernameResponse
     }
 `;
 

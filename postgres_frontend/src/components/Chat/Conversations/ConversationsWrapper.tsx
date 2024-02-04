@@ -1,6 +1,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Box } from "@chakra-ui/react";
 import { useRef } from "react";
+import ConversationList from "./ConversationsList";
 
 interface ConversationsWrapperProps {
     conversations: any;
@@ -20,7 +21,7 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ conversatio
             py={6}
             px={3}
         >
-            {/* <ConversationList session={session} conversations={conversationsData?.conversations || []} onViewConversation={onViewConversation} /> */}
+            <ConversationList conversations={conversations} />
         </Box>
     );
 };

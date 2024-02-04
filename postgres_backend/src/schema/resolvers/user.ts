@@ -2,9 +2,31 @@ import { GraphQLError } from "graphql";
 
 const resolvers = {
     Query: {
-        searchUsers: () => {},
+        searchUsers: async (
+            _: any,
+            { username }: any,
+            { supabase }: any
+          ): Promise<any> => {
+            try {
+                const { data, error } = await supabase.rpc("find_users_by_username", { p_username: username });
+
+                if (error) {
+                    console.error("searchUsers error", error);
+                    throw new GraphQLError(error?.message);
+                }
+                
+                return data;
+            } catch (error: any) {
+                console.error("searchUsers error", error);
+                throw new GraphQLError(error?.message);
+            }
+        },
         getUserDataById: async function (_: any, __: any, { supabase, userId }: any): Promise<any> {
             try {
+                if (!userId) {
+                    return null;
+                }
+
                 const { data, error } = await supabase.rpc("get_public_profile_by_id", { user_id: userId });
 
                 if (error) {
@@ -22,7 +44,7 @@ const resolvers = {
     Mutation: {
         createUsername: async function (_: any, { username }: { username: string }, { supabase, userId }: any): Promise<any> {
             try {
-                const { error } = await supabase.rpc("upsert_public_profile_username", { user_id: userId, p_username: username });
+                const { data: userData, error } = await supabase.rpc("upsert_public_profile_username", { user_id: userId, p_username: username });
 
                 if (error) {
                     console.error("createUsername error", error);
@@ -31,7 +53,7 @@ const resolvers = {
                     };
                 }
 
-                return { success: true };
+                return { userData };
             } catch (error: any) {
                 console.error("createUsername error", error);
                 return {

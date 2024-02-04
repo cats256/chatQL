@@ -3,16 +3,15 @@
 import Auth from "@/components/Auth/Auth";
 import Chat from "@/components/Chat/Chat";
 import userOperations from "@/graphql/operations/user";
-import { AuthContext } from "@/providers/AuthProvider";
 import { useQuery } from "@apollo/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function Home() {
     const { data: userData, error: userDataError, loading: userDataLoading } = useQuery(userOperations.Queries.getUserDataById);
-
-    const context = useContext(AuthContext);
+    console.log(userData)
+    
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();
@@ -33,5 +32,5 @@ export default function Home() {
         toast.error(userDataError.message);
     }
 
-    return !userDataLoading && (userData?.getUserDataById?.username ? <Chat conversations={userData?.getUserDataById.conversations} /> : <Auth />);
+    return !userDataLoading && (userData?.getUserDataById?.username ? <Chat conversations={userData.getUserDataById.conversations} /> : <Auth />);
 }
