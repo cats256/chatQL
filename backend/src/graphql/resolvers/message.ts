@@ -116,11 +116,6 @@ const resolvers = {
                     include: conversationPopulated,
                 });
 
-                console.log("published")
-                console.log(newMessage)
-                console.log(conversation)
-
-
                 pubsub.publish("MESSAGE_SENT", { messageSent: newMessage });
                 pubsub.publish("CONVERSATION_UPDATED", { conversationUpdated: conversation });
             } catch (error) {

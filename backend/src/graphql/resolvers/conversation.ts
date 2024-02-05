@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import { ConversationPopulated, GraphQLContext } from "../../util/types";
 import { Prisma } from "@prisma/client";
 import { withFilter } from "graphql-subscriptions";
+import { stringify } from "querystring";
 
 export const participantPopulated = Prisma.validator<Prisma.ConversationParticipantInclude>()({
     user: {
@@ -100,6 +101,41 @@ const resolvers = {
             } catch (error) {
                 console.error("createConversation error", error);
                 throw new GraphQLError("Error creating conversation");
+            }
+        },
+        markConversationAsRead: async function (_: any, args: { userId: string; conversationId: string }, context: GraphQLContext): Promise<boolean> {
+            const { session, prisma } = context;
+            const { userId, conversationId } = args;
+
+            if (!session?.user) {
+                throw new GraphQLError("Not authorized");
+            }
+
+            try {
+                const participant = await prisma.conversationParticipant.findFirst({
+                    where: {
+                        userId,
+                        conversationId,
+                    },
+                });
+
+                if (!participant) {
+                    throw new GraphQLError("Participant entity not found");
+                }
+
+                await prisma.conversationParticipant.update({
+                    where: {
+                        id: participant.id,
+                    },
+                    data: {
+                        hasSeenLatestMessage: true,
+                    },
+                });
+
+                return true;
+            } catch (error: any) {
+                console.log("markConversationAsRead error", error);
+                throw new GraphQLError(error?.message);
             }
         },
     },

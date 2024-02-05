@@ -5,11 +5,12 @@ import React, { useState } from "react";
 import { ConversationPopulated } from "../../../../../backend/src/util/types";
 import ConversationItem from "./ConversationItem";
 import { useSearchParams } from "next/navigation";
+import conversation from "@/graphql/operations/conversation";
 
 type ConversationListProps = {
     session: Session;
     conversations: Array<ConversationPopulated>;
-    onViewConversation: (conversationId: string) => void;
+    onViewConversation: (conversationId: string, hasSeenLatestMessage: boolean | undefined) => void;
 };
 
 const ConversationList: React.FC<ConversationListProps> = ({ conversations, session, onViewConversation }) => {
@@ -35,15 +36,20 @@ const ConversationList: React.FC<ConversationListProps> = ({ conversations, sess
                 </Text>
             </Box>
             <ConversationModal isOpen={isOpen} onClose={onClose} />
-            {conversations.map((conversation) => (
-                <ConversationItem
-                    userId={userId}
-                    key={conversation.id}
-                    conversation={conversation}
-                    onClick={() => onViewConversation(conversation.id)}
-                    isSelected={conversation.id === searchParams?.get("conversationId")}
-                />
-            ))}
+            {conversations.map((conversation) => {
+                const participant = conversation.participants.find(
+                    (p) => p.user.id === userId
+                );
+                return (
+                    <ConversationItem
+                        userId={userId}
+                        key={conversation.id}
+                        conversation={conversation}
+                        onClick={() => onViewConversation(conversation.id, participant?.hasSeenLatestMessage)}
+                        isSelected={conversation.id === searchParams?.get("conversationId")}
+                        hasSeenLatestMessage={participant?.hasSeenLatestMessage}
+                    />)
+            })}
         </Box>
     );
 };

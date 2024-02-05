@@ -7,6 +7,7 @@ import { BiLogOut } from "react-icons/bi";
 import { AiOutlineEdit } from "react-icons/ai";
 import { formatUsernames } from "../../../utils/functions";
 import { ConversationPopulated } from "../../../../../backend/src/util/types";
+import { GoDot } from "react-icons/go";
 
 const formatRelativeLocale = {
     lastWeek: "eeee",
@@ -21,7 +22,7 @@ interface ConversationItemProps {
     onClick: () => void;
     isSelected: boolean;
     //   onEditConversation?: () => void;
-    //   hasSeenLatestMessage?: boolean;
+      hasSeenLatestMessage?: boolean;
     //   selectedConversationId?: string;
     //   onDeleteConversation?: (conversationId: string) => void;
     //   onLeaveConversation?: (conversation: ConversationPopulated) => void;
@@ -33,7 +34,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
     onClick,
     isSelected,
     //   selectedConversationId,
-    //   hasSeenLatestMessage,
+      hasSeenLatestMessage,
     //   onEditConversation,
     //   onDeleteConversation,
     //   onLeaveConversation,
@@ -99,12 +100,12 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
                     )}
                 </MenuList>
             </Menu>
-            {/* <Flex position="absolute" left="-6px">
-          {hasSeenLatestMessage === false && (
-            <GoPrimitiveDot fontSize={18} color="#6B46C1" />
-          )}
-        </Flex> */}
-            <Avatar />
+            <Flex position="absolute" left="0px">
+                {hasSeenLatestMessage === false && (
+                    <GoDot fontSize={18} color="#6B46C1" />
+                )}
+            </Flex>
+            <Avatar marginLeft="8px" />
             <Flex justify="space-between" width="80%" height="100%">
                 <Flex direction="column" width="70%" height="100%">
                     <Text fontWeight={600} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">

@@ -1,13 +1,13 @@
 import SkeletonLoader from "@/components/common/SkeletonLoader";
 import ConversationOperations from "@/graphql/operations/conversation";
 import { ConversationsData } from "@/utils/types";
-import { useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Box } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { ConversationPopulated } from "../../../../../backend/src/util/types";
+import { ConversationPopulated, ParticipantPopulated } from "../../../../../backend/src/util/types";
 import ConversationList from "./ConversationList";
 
 type ConversationsWrapperProps = { session: Session };
@@ -19,6 +19,13 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
         loading: conversationsLoading,
         subscribeToMore,
     } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations);
+    const [markConversationAsRead] = useMutation<
+        { markConversationAsRead: boolean },
+        { userId: string; conversationId: string }
+    >(ConversationOperations.Mutations.markConversationAsRead);
+    const {
+        user: { id: userId },
+    } = session;
 
     const searchParams = useSearchParams();
     const conversationId = searchParams?.get("conversationId");
@@ -27,8 +34,73 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
     const initializedConversationsSet = useRef(false);
 
     const router = useRouter();
-    const onViewConversation = async (conversationId: string) => {
+    const onViewConversation = async (conversationId: string, hasSeenLatestMessage: boolean | undefined) => {
         router.push(`?conversationId=${conversationId}`);
+
+        if (hasSeenLatestMessage) {
+            return;
+        }
+
+        try {
+            await markConversationAsRead({
+                variables: {
+                    userId,
+                    conversationId,
+                },
+                optimisticResponse: {
+                    markConversationAsRead: true,
+                },
+                update: (cache) => {
+                    const participantsFragment = cache.readFragment<{
+                        participants: Array<ParticipantPopulated>;
+                    }>({
+                        id: `Conversation:${conversationId}`,
+                        fragment: gql`
+                    fragment Participants on Conversation {
+                      participants {
+                        user {
+                          id
+                          username
+                        }
+                        hasSeenLatestMessage
+                      }
+                    }
+                  `,
+                    });
+
+                    if (!participantsFragment) return;
+
+                    const participants = [...participantsFragment.participants];
+
+                    const userParticipantIdx = participants.findIndex(
+                        (p) => p.user.id === userId
+                    );
+
+                    if (userParticipantIdx === -1) return;
+
+                    const userParticipant = participants[userParticipantIdx];
+
+                    participants[userParticipantIdx] = {
+                        ...userParticipant,
+                        hasSeenLatestMessage: true,
+                    };
+
+                    cache.writeFragment({
+                        id: `Conversation:${conversationId}`,
+                        fragment: gql`
+                    fragment UpdatedParticipant on Conversation {
+                      participants
+                    }
+                  `,
+                        data: {
+                            participants,
+                        },
+                    });
+                },
+            });
+        } catch (error) {
+            console.log("onViewConversation error", error);
+        }
     };
 
     const subscribeToNewConversations = () => {
@@ -68,8 +140,8 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
 
     return (
         <Box width={{ base: "100%", md: "400px" }} bg="whiteAlpha.50" py={6} px={3} display={{ base: conversationId ? "none" : "flex", md: "flex" }}>
-            {conversationsLoading ? <SkeletonLoader count={7} height="80px" width="360px" /> : 
-            <ConversationList session={session} conversations={conversationsData?.conversations || []} onViewConversation={onViewConversation} />}
+            {conversationsLoading ? <SkeletonLoader count={7} height="80px" width="360px" /> :
+                <ConversationList session={session} conversations={conversationsData?.conversations || []} onViewConversation={onViewConversation} />}
         </Box>
     );
 };
