@@ -47,8 +47,7 @@ const resolvers = {
                     },
                 });
 
-                // return messages;
-                return [{ body: "hey dude this is a super sick message" } as MessagePopulated];
+                return messages;
             } catch (error: any) {
                 console.log("messages error", error);
                 throw new GraphQLError(error?.message);
@@ -80,6 +79,13 @@ const resolvers = {
                     include: messagePopulated,
                 });
 
+                const participant = await prisma.conversationParticipant.findFirst({
+                    where: {
+                        userId,
+                        conversationId,
+                    },
+                });
+
                 const conversation = await prisma.conversation.update({
                     where: {
                         id: conversationId,
@@ -89,7 +95,7 @@ const resolvers = {
                         participants: {
                             update: {
                                 where: {
-                                    id: senderId,
+                                    id: participant?.id,
                                 },
                                 data: {
                                     hasSeenLatestMessage: true,
@@ -98,7 +104,7 @@ const resolvers = {
                             updateMany: {
                                 where: {
                                     NOT: {
-                                        userId: senderId,
+                                        userId,
                                     },
                                 },
                                 data: {
@@ -107,10 +113,16 @@ const resolvers = {
                             },
                         },
                     },
+                    include: conversationPopulated,
                 });
 
+                console.log("published")
+                console.log(newMessage)
+                console.log(conversation)
+
+
                 pubsub.publish("MESSAGE_SENT", { messageSent: newMessage });
-                // pubsub.publish("CONVERSATION_UPDATED", { conversationUpdated: conversation });
+                pubsub.publish("CONVERSATION_UPDATED", { conversationUpdated: conversation });
             } catch (error) {
                 console.log("sendMessage error", error);
                 throw new GraphQLError("Error sending message");
@@ -124,10 +136,10 @@ const resolvers = {
             subscribe: withFilter(
                 (_: any, __: any, context: GraphQLContext) => {
                     const { pubsub } = context;
-                    return pubsub.asyncIterator("MESSAGE_SENT");
+                    return pubsub.asyncIterator(["MESSAGE_SENT"]);
                 },
-                (payload: MessageSentSubscriptionPayload, args: { conversationid: string }, context: GraphQLContext) => {
-                    return payload.messageSent.conversationId === args.conversationid;
+                (payload: MessageSentSubscriptionPayload, args: { conversationId: string }, context: GraphQLContext) => {
+                    return payload.messageSent.conversationId === args.conversationId;
                 }
             ),
         },

@@ -1,14 +1,14 @@
-import { Session } from "next-auth";
-import { Box, Progress, Spinner } from "@chakra-ui/react";
-import React, { use, useEffect, useRef } from "react";
+import SkeletonLoader from "@/components/common/SkeletonLoader";
 import ConversationOperations from "@/graphql/operations/conversation";
-import { useQuery } from "@apollo/client";
-import ConversationList from "./ConversationList";
 import { ConversationsData } from "@/utils/types";
-import { ConversationPopulated } from "../../../../../backend/src/util/types";
-import toast from "react-hot-toast";
-import { useSubscription, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { Box } from "@chakra-ui/react";
+import { Session } from "next-auth";
 import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
+import { ConversationPopulated } from "../../../../../backend/src/util/types";
+import ConversationList from "./ConversationList";
 
 type ConversationsWrapperProps = { session: Session };
 
@@ -57,7 +57,7 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
     useEffect(() => {
         if (!conversationsLoading && !initializedConversationsSet.current) {
             initializedConversationsSet.current = true;
-            conversationIdsSet.current = new Set(conversationsData?.conversations.map((conversation) => conversation._id));
+            conversationIdsSet.current = new Set(conversationsData?.conversations.map((conversation) => conversation.id));
         }
     }, [conversationsLoading]);
 
@@ -68,8 +68,8 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({ session }) 
 
     return (
         <Box width={{ base: "100%", md: "400px" }} bg="whiteAlpha.50" py={6} px={3} display={{ base: conversationId ? "none" : "flex", md: "flex" }}>
-            <ConversationList session={session} conversations={conversationsData?.conversations || []} onViewConversation={onViewConversation} />
-            {conversationsLoading && <Progress size="xs" isIndeterminate />}
+            {conversationsLoading ? <SkeletonLoader count={7} height="80px" width="360px" /> : 
+            <ConversationList session={session} conversations={conversationsData?.conversations || []} onViewConversation={onViewConversation} />}
         </Box>
     );
 };

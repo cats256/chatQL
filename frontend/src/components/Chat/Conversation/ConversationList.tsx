@@ -23,7 +23,12 @@ const ConversationList: React.FC<ConversationListProps> = ({ conversations, sess
     const onClose = () => setIsOpen(false);
 
     return (
-        <Box width="100%">
+        <Box
+            width={{ base: "100%", md: "400px" }}
+            position="relative"
+            height="100%"
+            overflow="hidden"
+        >
             <Box py={2} px={4} mb={4} bg="blackAlpha.300" borderRadius={4} cursor="pointer" onClick={onOpen}>
                 <Text textAlign="center" color="whiteAlpha.800" fontWeight={500}>
                     Find or start a conversation

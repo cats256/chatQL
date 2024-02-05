@@ -22,6 +22,7 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ userId, conversationId 
         router.replace(process.env.NEXT_PUBLIC_BASE_URL as string);
     }
 
+    
     return (
         <Stack direction="row" align="center" spacing={6} py={5} px={{ base: 4, md: 0 }} borderBottom="1px solid" borderColor="whiteAlpha.200">
             <Button display={{ md: "none" }} onClick={() => router.replace("/")}>
