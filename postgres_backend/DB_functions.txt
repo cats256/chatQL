@@ -1,0 +1,28 @@
+-- create or replace function get_public_profiles() returns setof public.profiles as $$
+--   select * from public.profiles;
+-- $$ language sql;
+
+-- select * from get_public_profiles();
+
+-- DROP FUNCTION upsert_public_profile_username(uuid,text);
+
+-- CREATE OR REPLACE FUNCTION upsert_public_profile_username(user_id uuid, p_username TEXT) RETURNS public.profiles AS $$
+--     INSERT INTO public.profiles (id, username) 
+--     VALUES (user_id, p_username)
+--     ON CONFLICT (id) 
+--     DO UPDATE SET username = EXCLUDED.username;
+
+--     SELECT * FROM public.profiles WHERE id = user_id;
+-- $$ LANGUAGE sql;
+
+-- DROP FUNCTION get_public_profile_by_id(uuid);
+
+-- CREATE OR REPLACE FUNCTION get_public_profile_by_id(user_id uuid) returns public.profiles AS $$
+--     SELECT * FROM public.profiles WHERE id = user_id
+-- $$ LANGUAGE sql;
+
+-- DROP FUNCTION find_users_by_username(text);
+
+CREATE OR REPLACE FUNCTION find_users_by_username(p_username TEXT) returns SETOF public.profiles AS $$
+    SELECT * FROM public.profiles WHERE username ILIKE '%' || p_username || '%';
+$$ LANGUAGE SQL;

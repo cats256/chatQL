@@ -31,6 +31,7 @@ interface Context {
 const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const router = useRouter();
     const context = useContext(AuthContext) as Context;
+    const userId = context.session.user.id;
 
     const [username, setUsername] = useState("");
     const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
@@ -56,7 +57,7 @@ const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     };
 
     const onCreateConversation = async () => {
-        const participantIds = [context.session.user.id, ...participants.map((participant) => participant.id)];
+        const participantIds = [userId, ...participants.map((participant) => participant.id)];
         try {
             const { data } = await createConversation({
                 variables: {
@@ -99,7 +100,7 @@ const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                             </Button>
                         </Stack>
                     </form>
-                    {data?.searchUsers && <UserSearchList users={data.searchUsers} addParticipant={addParticipant}></UserSearchList>}
+                    {data?.searchUsers && <UserSearchList users={data.searchUsers.filter(searchedUser => searchedUser.id !== userId)} addParticipant={addParticipant}></UserSearchList>}
                     {participants.length !== 0 && (
                         <>
                             <Participant participants={participants} removeParticipant={removeParticipant} />
