@@ -14,7 +14,6 @@ const ConversationList: React.FC<ConversationListProps> = ({ conversations }) =>
     const [isOpen, setIsOpen] = useState(false);
 
     const onOpen = () => setIsOpen(true);
-    const onClose = () => setIsOpen(false);
 
     return (
         <Box width={{ base: "100%", md: "400px" }} position="relative" height="100%" overflow="hidden">
@@ -22,8 +21,8 @@ const ConversationList: React.FC<ConversationListProps> = ({ conversations }) =>
                 <Text textAlign="center" color="whiteAlpha.800" fontWeight={500}>
                     Find or start a conversation
                 </Text>
-            </Box>
-            <ConversationModal isOpen={isOpen} onClose={onClose} />
+            </Box>  
+            <ConversationModal isOpen={isOpen} setIsOpen={setIsOpen} />
             {conversations.map((conversation) => {
                 return <ConversationItem conversation={conversation} />;
             })}

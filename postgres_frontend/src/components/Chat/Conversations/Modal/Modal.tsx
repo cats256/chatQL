@@ -13,7 +13,7 @@ import { useContext } from "react";
 
 interface ModalProps {
     isOpen: boolean;
-    onClose: () => void;
+    setIsOpen: (state: boolean) => void;
 }
 
 interface User {
@@ -28,13 +28,14 @@ interface Context {
     session: Session;
 }
 
-const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const ConversationModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
     const router = useRouter();
     const context = useContext(AuthContext) as Context;
     const userId = context.session.user.id;
 
     const [username, setUsername] = useState("");
     const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
+    const [showUserSearchList, setShowUserSearchList] = useState(false);
     const [searchUsers, { data, loading: searchUsersLoading }] = useLazyQuery<SearchUsersData, SearchUsersInput>(UserOperations.Queries.searchUsers);
     const [createConversation, { loading: createConversationLoading }] = useMutation<CreateConversationData, CreateConversationInput>(
         ConversationOperations.Mutations.createConversation
@@ -54,7 +55,14 @@ const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const onSearch = async (event: FormEvent) => {
         event.preventDefault();
         searchUsers({ variables: { username } });
+        setShowUserSearchList(true);
+        setUsername("");
     };
+
+    const onClose = () => {
+        setIsOpen(false);
+        setShowUserSearchList(false);
+    }
 
     const onCreateConversation = async () => {
         const participantIds = [userId, ...participants.map((participant) => participant.id)];
@@ -100,7 +108,7 @@ const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                             </Button>
                         </Stack>
                     </form>
-                    {data?.searchUsers && <UserSearchList users={data.searchUsers.filter(searchedUser => searchedUser.id !== userId)} addParticipant={addParticipant}></UserSearchList>}
+                    {showUserSearchList && data?.searchUsers && <UserSearchList users={data.searchUsers.filter(searchedUser => searchedUser.id !== userId)} addParticipant={addParticipant}></UserSearchList>}
                     {participants.length !== 0 && (
                         <>
                             <Participant participants={participants} removeParticipant={removeParticipant} />
