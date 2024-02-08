@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { ApolloWrapper } from "@/providers/ApolloWrapper";
+import { Toaster } from "react-hot-toast"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <html lang="en">
                 <body className={inter.className}>
                     <AuthProvider session={session} accessToken={session?.access_token}>
-                        <Providers>{children}</Providers>
+                        <Providers>{children}<Toaster /></Providers>
                     </AuthProvider>
                 </body>
             </html>
