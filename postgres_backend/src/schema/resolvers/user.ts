@@ -2,11 +2,7 @@ import { GraphQLError } from "graphql";
 
 const resolvers = {
     Query: {
-        searchUsers: async (
-            _: any,
-            { username }: any,
-            { supabase }: any
-          ): Promise<any> => {
+        searchUsers: async (_: any, { username }: any, { supabase }: any): Promise<any> => {
             try {
                 const { data, error } = await supabase.rpc("find_users_by_username", { p_username: username });
 
@@ -14,7 +10,7 @@ const resolvers = {
                     console.error("searchUsers error", error);
                     throw new GraphQLError(error?.message);
                 }
-                
+
                 return data;
             } catch (error: any) {
                 console.error("searchUsers error", error);
@@ -28,7 +24,7 @@ const resolvers = {
                 }
 
                 const { data, error } = await supabase.rpc("get_public_profile_by_id", { user_id: userId });
-
+                
                 if (error) {
                     console.error("getUserDataById error", error);
                     throw new GraphQLError(error?.message);
@@ -37,6 +33,27 @@ const resolvers = {
                 return data;
             } catch (error: any) {
                 console.error("getUserDataById error", error);
+                throw new GraphQLError(error?.message);
+            }
+        },
+    },
+    PublicProfile: {
+        conversations: async function (_: any, __: any, { supabase, userId }: any): Promise<any> {
+            if (!userId) {
+                return null;
+            }
+
+            try {
+                const { data, error } = await supabase.rpc("get_conversations_by_id", { user_id: userId });
+
+                if (error) {
+                    console.error("PublicProfileConversations error", error);
+                    throw new GraphQLError(error?.message);
+                }
+
+                return data;
+            } catch (error: any) {
+                console.error("PublicProfileConversations error", error);
                 throw new GraphQLError(error?.message);
             }
         },

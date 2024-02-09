@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 
 export default function Home() {
     const { data: userData, error: userDataError, loading: userDataLoading } = useQuery(userOperations.Queries.getUserDataById);
-    
+    console.log(userData)
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();

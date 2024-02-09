@@ -1,10 +1,14 @@
 import { gql } from "@apollo/client";
 
+const ConversationDataFields = `
+    id
+    created_at
+`
+
 const UserDataFields = `
     id
     created_at
     username
-    conversations
 `;
 
 const userOperations = {
@@ -21,6 +25,9 @@ const userOperations = {
             query GetUserDataById {
                 getUserDataById {
                     ${UserDataFields}
+                    conversations {
+                        ${ConversationDataFields}
+                    }
                 }
             }
         `,

@@ -49,6 +49,11 @@ async function main() {
                     data: { user },
                 } = await supabase.auth.getUser(token);
 
+                if (!user?.id) {
+                    console.error("Unauthorized")
+                    throw Error("Unauthorized")
+                }
+
                 return { supabase, userId: user?.id };
             },
         })

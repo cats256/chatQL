@@ -11,3 +11,4 @@
 -   Look up when an object in useState changes but an attribute of the object, which a component relies on, doesn't change, would that component re-render?
     - so even if setState is triggered and the new value set is the same, it would re-render causing unnecessary use of resources?
     - look up react.memo
+-   Update create_conversation to must have at least 2 participants

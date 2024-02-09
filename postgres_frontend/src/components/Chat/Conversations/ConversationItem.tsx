@@ -1,5 +1,7 @@
 import { Avatar, Flex, Stack, Text } from "@chakra-ui/react";
 import React from "react";
+import { formatRelative } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
 
 const formatRelativeLocale = {
     lastWeek: "eeee",
@@ -34,7 +36,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation }) => 
                 <Flex direction="column" width="70%" height="100%">
                     <Text fontWeight={600} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
                         {/* {formatUsernames(conversation.participants, userId)} */}
-                        conversation.id;
+                        {conversation.id}
                     </Text>
                     {/* {conversation.latestMessage && (
                         <Box width="140%">
@@ -45,12 +47,12 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation }) => 
                     )} */}
                 </Flex>
                 <Text color="whiteAlpha.700" textAlign="right" position="absolute" right={4}>
-                    {/* {formatRelative(new Date(conversation.updatedAt), new Date(), {
+                    {formatRelative(new Date(conversation.created_at), new Date(), {
                         locale: {
                             ...enUS,
                             formatRelative: (token: any) => formatRelativeLocale[token as keyof typeof formatRelativeLocale],
                         },
-                    })} */}
+                    })}
                 </Text>
             </Flex>
         </Stack>
