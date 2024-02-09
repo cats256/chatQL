@@ -4,13 +4,14 @@ import FeedWrapper from "./Feed/FeedWrapper";
 
 interface ChatProps {
     conversations: any;
+    username: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ conversations }) => {
+const Chat: React.FC<ChatProps> = ({ conversations, username }) => {
     return (
         <Flex height="100vh">
             <ConversationsWrapper conversations={conversations} />
-            <FeedWrapper />
+            <FeedWrapper username={username} />
         </Flex>
     );
 };

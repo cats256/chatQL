@@ -6,11 +6,11 @@ import userOperations from "@/graphql/operations/user";
 import { useQuery } from "@apollo/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 export default function Home() {
     const { data: userData, error: userDataError, loading: userDataLoading } = useQuery(userOperations.Queries.getUserDataById);
-    console.log(userData)
+
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();
@@ -31,5 +31,12 @@ export default function Home() {
         toast.error(userDataError.message);
     }
 
-    return !userDataLoading && (userData?.getUserDataById?.username ? <Chat conversations={userData.getUserDataById.conversations} /> : <Auth />);
+    return (
+        !userDataLoading &&
+        (userData?.getUserDataById?.username ? (
+            <Chat conversations={userData.getUserDataById.conversations} username={userData.getUserDataById.username} />
+        ) : (
+            <Auth />
+        ))
+    );
 }
